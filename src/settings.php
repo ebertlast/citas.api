@@ -15,5 +15,12 @@ return [
             'path' => __DIR__ . '/../logs/app.log',
             'level' => \Monolog\Logger::DEBUG,
         ],
+
+        'dabase_default' => [
+            'dbhost' => 'VAIO',
+            'dbname' => 'KRYESTRIOS',
+            'dbuser' => 'sa',
+            'dbpasswd' => '123456'
+        ],
     ],
 ];

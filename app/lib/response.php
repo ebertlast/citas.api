@@ -9,6 +9,7 @@ class Response
   	public $logout     = false;
 	public function SetResponse($response, $m = '')
 	{
+		if($response===null){ $response = false; }
 		$this->response = $response;
 		$this->message  = $m;
 		if(!$response && $m = '') $this->response = 'Ocurrio un error inesperado';
