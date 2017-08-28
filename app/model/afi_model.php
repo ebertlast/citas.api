@@ -3,7 +3,6 @@ namespace App\Model;
 
 use App\Lib\Database;
 use App\Lib\Response;
-use App\Lib\Tokens;
 
 class AfiModel
 {
@@ -12,12 +11,22 @@ class AfiModel
 
     private $servidor;
     private $dbbase;
+    
+    // private $transport;
+    // private $mailer;
+
     public function __CONSTRUCT($servidor,$dbbase,$usuario,$clave) {
         try{
             $this->response = new Response();
             $this->db = Database::StartUp($servidor,$dbbase,$usuario,$clave);
             $this->servidor = $servidor;
             $this->dbbase = $dbbase;
+
+            // Create Transport
+            // $this->transport = Swift_MailTransport::newInstance();
+            // // Create Mailer with our Transport.
+            // $this->mailer = Swift_Mailer::newInstance($transport);
+
         }catch(Exception $e){
             $this->response->setResponse(false, $e->getMessage());
             return $this->response;
@@ -26,7 +35,7 @@ class AfiModel
 
     public function Get($idafiliado = '', $tipo_ident = ''){
         try
-        {
+        {          
             $result = array();
             $query = "EXEC dbo.SPK_AFI ?,?";
             $stmt = sqlsrv_prepare($this->db, $query, array(&$idafiliado,&$tipo_ident));

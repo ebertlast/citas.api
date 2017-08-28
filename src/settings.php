@@ -22,5 +22,13 @@ return [
             'dbuser' => 'sa',
             'dbpasswd' => '123456'
         ],
+
+        'mailer' =>[
+            'host' => "smtp.gmail.com",
+            'username' => "ebertunerg@gmail.com",
+            'password' => "123Enclave.21978",
+            'smtpsecure' => "ssl",
+            'port' => 465
+        ]
     ],
 ];

@@ -1,8 +1,15 @@
 <?php
 use App\Model\AfiModel;
 use App\Lib\Response;
+use App\Lib\Correo;
+
+
 $app->group('/afi/', function () {
+    
     $this->get('{idafiliado}/[{tipoident}]', function ($req, $res, $args) {
+
+       
+
         $idafiliado="";
         $tipoident="";
         if(isset($args["tipoident"])){ $tipoident =  $args["tipoident"]; }
@@ -26,7 +33,7 @@ $app->group('/afi/', function () {
                 )
             );
         }
-        
+
         return $res
         ->withHeader('Content-type', 'application/json')
         ->getBody()
@@ -73,12 +80,35 @@ $app->group('/afi/', function () {
         //         $response
         //     )
         // );
+        $response = $model->Post($data['afiliado']);
+        $email = $data['afiliado']['EMAIL'];
+        $razonsocial = $data['afiliado']['PNOMBRE'].' '.$data['afiliado']['PAPELLIDO'];
+        if($response->result === true && $email!=""){
+            $mail = new PHPMailer();
+            $mail->IsSMTP();
+            $mail->SMTPDebug = 0;
+            $mail->Host = $conf['mailer']['host'];
+            $mail->SMTPAuth = true;
+            $mail->IsHTML(true);
+            $mail->Username = $conf['mailer']['username'];
+            $mail->Password = $conf['mailer']['password'];
+            $mail->SMTPSecure = "ssl";
+            $mail->Port = 465;
+            // $mail->From = "ebertunerg@gmail.com";
+            $mail->setFrom($conf['mailer']['username'], 'Citas Médicas Krystalos');
+            $mail->AddAddress($email, $razonsocial);
+            $mail->Subject = "Afiliación a Krystalos";
+            $mail->Body = "Bienvenido a Krystalos, usted ha sido afiliado satisfactoriamente y debe ahora registrarse para configurar su usuario.";
+            $mail->CharSet = 'UTF-8';
+            $mail->Send(); /*When this line runs then it it send the gmail and my api is called  and below mentioned response is never executed*/
+        }
+        
         return $res
         ->withHeader('Content-type', 'application/json')
         ->getBody()
         ->write(
             json_encode(
-                $model->Post($data['afiliado'])
+                $response
             )
         );
     });
