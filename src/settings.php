@@ -28,7 +28,8 @@ return [
             'username' => "ebertunerg@gmail.com",
             'password' => "123Enclave.21978",
             'smtpsecure' => "ssl",
-            'port' => 465
+            'port' => 465,
+            'urlactivate' => 'http://localhost:4200/#/activar'
         ]
     ],
 ];

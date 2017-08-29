@@ -14,10 +14,21 @@ $app->add(function ($request, $response, $next) {
     $route = explode("/",$route)[0];
     // $route = $request->getUri()->getPath();
     // var_dump($route);
+    $method = $request->getMethod();
+
+
+    // $respuesta = new Response();
+    // $respuesta -> SetLogout();
+    // $respuesta -> SetResponse (false, $route);
+    // return $response
+    // ->withHeader('Content-type', 'application/json')
+    // ->withJson(($respuesta))
+    // ; 
     
     /*SECCIÓN DE TOKENS*/
+    //!($route==="ususuw" && $method === "GET")
     if($route != "tgen" && $route != "afi" && $route != "ciub" && $route != "ocu"
-        && $route != "ter" && $route != "pln"
+        && $route != "ter" && $route != "pln" && $route !== "ususuw"
     ){
         $authorization = $request->getHeader("Authorization");
         // var_dump(count($authorization));

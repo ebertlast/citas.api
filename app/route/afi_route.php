@@ -6,10 +6,8 @@ use App\Lib\Correo;
 
 $app->group('/afi/', function () {
     
+    // Get afiliado
     $this->get('{idafiliado}/[{tipoident}]', function ($req, $res, $args) {
-
-       
-
         $idafiliado="";
         $tipoident="";
         if(isset($args["tipoident"])){ $tipoident =  $args["tipoident"]; }
@@ -43,7 +41,8 @@ $app->group('/afi/', function () {
             )
         );
     });
-
+    
+    // Nuevo Usuario
     $this->post('', function ($req, $res, $args) {
         
         try{
@@ -93,7 +92,7 @@ $app->group('/afi/', function () {
             $mail->Username = $conf['mailer']['username'];
             $mail->Password = $conf['mailer']['password'];
             $mail->SMTPSecure = "ssl";
-            $mail->Port = 465;
+            $mail->Port = $conf['mailer']['port'];
             // $mail->From = "ebertunerg@gmail.com";
             $mail->setFrom($conf['mailer']['username'], 'Citas Médicas Krystalos');
             $mail->AddAddress($email, $razonsocial);
