@@ -28,10 +28,14 @@ $app->add(function ($request, $response, $next) {
     /*SECCIÓN DE TOKENS*/
     //!($route==="ususuw" && $method === "GET")
     if($route != "tgen" && $route != "afi" && $route != "ciub" && $route != "ocu"
-        && $route != "ter" && $route != "pln" && $route !== "ususuw"
+        && $route != "ter" && $route != "pln" 
+        && $route !== "ususuw"
+        // && ($route !== "ususuw" && strpos($request->getUri()->getPath(), 'autenticar'))
+        //&& $route !== "cit"
     ){
         $authorization = $request->getHeader("Authorization");
         // var_dump(count($authorization));
+
         $nuevoToken = "";
 
         $respuesta = new Response();
@@ -39,21 +43,45 @@ $app->add(function ($request, $response, $next) {
         if(count($authorization)>0) {
             $token = explode(" ", $authorization[0])[1];
             // var_dump($token);
+            
             $jwt = new Tokens();
             $data = array( );
             try{
                 $data = $jwt->decode($token);
             }catch(Exception $e){
+                $respuesta -> SetLogout();
                 $respuesta -> SetResponse (false, "Vuelve a iniciar sesión (". $e->getMessage() .").");
 
                 return $response
                 ->withHeader('Content-type', 'application/json')
-                ->withJson(json_encode($respuesta))
+                ->withJson(($respuesta))
                 ; 
             }
+            // // ************************************************************
+            // $respuesta = new Response();
+            // $respuesta -> SetLogout();
+            // $respuesta -> SetResponse (false, $data->clave);
+            // return $response
+            // ->withHeader('Content-type', 'application/json')
+            // ->withJson(($respuesta)); 
+            // // ************************************************************
+
             // var_dump($data);
             /*HACER AQUI LAS VALIDACIONES DE SEGURIDAD A LAS RUTAS POR USUARIO*/
+            
+            // Hacer que el nuevo token se vaya en la respuesta
             $nuevoToken = $jwt->encode($data);
+
+            $request = $request->withAttribute('token', $nuevoToken);
+            // $respuesta -> SetToken($nuevoToken);
+
+            // $respuesta = new Response();
+            // $respuesta -> SetLogout();
+            // $respuesta -> SetResponse (false, $nuevoToken);
+            // return $response
+            // ->withHeader('Content-type', 'application/json')
+            // ->withJson(($respuesta)); 
+
 
         }else{
     
@@ -70,7 +98,7 @@ $app->add(function ($request, $response, $next) {
     /*FIN DE LA SECCION DE TOKENS*/
     $response = $next($request, $response);
     // $response = $next($request, $respuesta);
-    
+    // var_dump($response->getBody());
     // $response->getBody()->write('DESPUES');
     return $response;
 });

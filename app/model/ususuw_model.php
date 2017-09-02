@@ -374,8 +374,24 @@ class UsusuwModel
             while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
                 $data[] = $row;
             }
+
+            // $this->response->setResponse(false);
+            // $this->response->message = $data[0]['USUARIO']; 
+            // return $this->response;
+            $jwt = new Tokens();
+            $data[0]['CLAVE']='';
+            // if((int)$data[0]['ACTIVO']===1){$data[0]['KEYACTIVATE']==='';};
+            
+            $token = $jwt->encode(array('usuario' => $usuario, 'clave' => $clave ));
+            $data[0]['TOKEN']=$token;
+            $this->response->SetToken($token);
+
+            // var_dump($jwt->decode($token));
+
             $this->response->setResponse(true);
             $this->response->result = $data;
+
+            
 
             return $this->response;
         }
