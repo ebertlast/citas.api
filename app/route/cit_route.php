@@ -115,4 +115,54 @@ $app->group('/cit/', function () {
             )
         );
     });
+
+    // Nuevo Usuario
+    $this->post('asignar', function ($req, $res, $args) {
+        
+        try{
+            $conf = $this->get('settings');
+            $dbhost = $conf['dabase_default']['dbhost'];  
+            $dbname = $conf['dabase_default']['dbname'];  
+            $dbuser = $conf['dabase_default']['dbuser'];  
+            $dbpasswd = $conf['dabase_default']['dbpasswd'];  
+            $model = new AfiModel($dbhost, $dbname, $dbuser, $dbpasswd);
+        }catch(Exception $e){
+            $response = new Response();
+            $response -> SetResponse (false, $e->getMessage());
+            return $res
+            ->withHeader('Content-type', 'application/json')
+            ->getBody()
+            ->write(
+                json_encode(
+                    $response
+                )
+            );
+        }
+
+        $json = $req->getParsedBody();
+        
+
+        $data = json_decode($json['json'],true);
+        // $response = new Response();
+        // $response -> SetResponse (false, json_encode($data['afiliado']));
+        // return $res
+        // ->withHeader('Content-type', 'application/json')
+        // ->getBody()
+        // ->write(
+        //     json_encode(
+        //         $response
+        //     )
+        // );
+        $response = $model->Post($data['cita']);
+        
+        
+        return $res
+        ->withHeader('Content-type', 'application/json')
+        ->getBody()
+        ->write(
+            json_encode(
+                $response
+            )
+        );
+    });
 });
