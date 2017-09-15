@@ -24,7 +24,7 @@ class Database
         // $pdo->setAttribute(PDO::SQLSRV_ATTR_ENCODING, PDO::SQLSRV_ENCODING_UTF8);
         return $pdo;
     }
-    public static function StartUp($dbhost = "VAIO", $dbname = "KRYESTRIOS", $dbuser = "", $dbpass = "") {
+    public static function StartUp($dbhost = "VAIO", $dbname = "KRYESTRIOS", $dbuser = "sa", $dbpass = "123456") {
         try {
             $serverName = $dbhost; 
             $connectionInfo = ($dbuser === "") ? 

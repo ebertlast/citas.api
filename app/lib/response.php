@@ -12,7 +12,7 @@ class Response
 		if($response===null){ $response = false; }
 		$this->response = $response;
 		$this->message  = $m;
-		if(!$response && $m = '') $this->response = 'Ocurrio un error inesperado';
+		if(!$response && $m = '') $this->message = 'Ocurrio un error inesperado';
 	}
     public function SetToken($t) { $this->token = $t; }
     public function SetLogout($logout = true) { $this->logout = $logout; }

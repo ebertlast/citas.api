@@ -17,8 +17,8 @@ return [
         ],
 
         'dabase_default' => [
-            'dbhost' => 'VAIO',
-            'dbname' => 'KRYESTRIOS',
+            'dbhost' => '.',
+            'dbname' => 'KFVIDA',
             'dbuser' => 'sa',
             'dbpasswd' => '123456'
         ],

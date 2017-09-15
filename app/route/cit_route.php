@@ -115,8 +115,47 @@ $app->group('/cit/', function () {
             )
         );
     });
+    
+    // Asignadas sin cumplir
+    $this->get('asignadas/{idafiliado}/[{cumplidas}]',function($req, $res, $args){
+        try{
+            $conf = $this->get('settings');
+            $dbhost = $conf['dabase_default']['dbhost'];  
+            $dbname = $conf['dabase_default']['dbname'];  
+            $dbuser = $conf['dabase_default']['dbuser'];  
+            $dbpasswd = $conf['dabase_default']['dbpasswd'];  
+            $model = new CitModel($dbhost, $dbname, $dbuser, $dbpasswd);
+        }catch(Exception $e){
+            $response = new Response();
+            $response -> SetResponse (false, $e->getMessage());
+            return $res
+            ->withHeader('Content-type', 'application/json')
+            ->getBody()
+            ->write(
+                json_encode(
+                    $response
+                )
+            );
+        }
 
-    // Nuevo Usuario
+        $idafiliado="";
+        $cumplidas="0";
+        if(isset($args["idafiliado"])){ $idafiliado =  $args["idafiliado"]; }
+        if(isset($args["cumplidas"])){ $cumplidas =  $args["cumplidas"]; }
+        $response = $model->GetByIdAfiliado($idafiliado,$cumplidas);
+        $response->setToken($req->getAttribute('token'));
+        
+        return $res
+        ->withHeader('Content-type', 'application/json')
+        ->getBody()
+        ->write(
+            json_encode(
+                $response
+            )
+        );
+    });
+
+    // Asignación de Cita
     $this->post('asignar', function ($req, $res, $args) {
         
         try{
@@ -125,7 +164,7 @@ $app->group('/cit/', function () {
             $dbname = $conf['dabase_default']['dbname'];  
             $dbuser = $conf['dabase_default']['dbuser'];  
             $dbpasswd = $conf['dabase_default']['dbpasswd'];  
-            $model = new AfiModel($dbhost, $dbname, $dbuser, $dbpasswd);
+            $model = new CitModel($dbhost, $dbname, $dbuser, $dbpasswd);
         }catch(Exception $e){
             $response = new Response();
             $response -> SetResponse (false, $e->getMessage());
@@ -154,7 +193,7 @@ $app->group('/cit/', function () {
         //     )
         // );
         $response = $model->Post($data['cita']);
-        
+        $response->setToken($req->getAttribute('token'));
         
         return $res
         ->withHeader('Content-type', 'application/json')
