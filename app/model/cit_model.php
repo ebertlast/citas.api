@@ -133,7 +133,64 @@ class CitModel
         }
     }
 
+    /**
+    *   Cancela una cita
+    */
+    public function CancelarCita($consecutivo){
+        try
+        {
+            $result = array();
+            
+            $procedure_params = array(
+                array(&$consecutivo, SQLSRV_PARAM_IN)
+            );
+            $sql = "EXEC dbo.SPK_CIT_DEL @CONSECUTIVO = ? ";
+            // $this->response->setResponse(false, $afiliado['IDAFILIADO']);
+            // return $this->response;
+            $stmt = sqlsrv_prepare($this->db, $sql, $procedure_params);
+            if( !$stmt ) {
+                $error="";
+                if( ($errors = sqlsrv_errors() ) != null) {
+                    foreach( $errors as $error ) {
+                        $sqlstate = "SQLSTATE: ".$error[ 'SQLSTATE']."";
+                        $code = "Code: ".$error['code']."";
+                        $message =  "Message: ".$error['message'].".";
+                        $error = $sqlstate.".- (".$code.") ".$message;
+                    }
+                }
+                $this->response->setResponse(false);
+                $this->response->message = $error; 
+                return $this->response;
+            }
+            $data = array();
+            $result = sqlsrv_execute($stmt);
+            if( !$result ) {
+                $error="";
+                if( ($errors = sqlsrv_errors() ) != null) {
+                    foreach( $errors as $error ) {
+                        $sqlstate = "SQLSTATE: ".$error[ 'SQLSTATE']."";
+                        $code = "Code: ".$error['code']."";
+                        $message =  "Message: ".$error['message'].".";
+                        $error = $sqlstate.".- (".$code.") ".$message;
+                    }
+                }
+                $this->response->setResponse(false);
+                $this->response->message = $error; 
+                return $this->response;
+            }else{
+                $this->response->setResponse(true);
+                $this->response->result = true;
+            }
 
+            return $this->response;
+        }
+        catch(Exception $e)
+        {
+          $this->response->setResponse(false, $e->getMessage());
+                return $this->response;
+        }
+    }
+    
 
     /**
     *   Registra una cita
